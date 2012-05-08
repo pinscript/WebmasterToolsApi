@@ -15,6 +15,9 @@ Requesting a new token every time is not performant. Since all tokens are valid 
     
 This will read a token from token.cache. If the file could not be found or it's not valid, we request a new token and cache that.
 
+## Features
+* Please note that this library is far from finished and only a few resources are implemented. However, implementing this yourself should not be of any trouble.
+
 ### Sites feed
 Getting a list of all sites is easy. GetSites will return the actual feed, but as a ExpandoObject.
 
@@ -34,8 +37,8 @@ It is also possible to retrieve the feed for a specific site:
 ### Getting messages
 To get all messages for a specific account:
 
-   var tools = new WebmasterTools(token);
-   var messages = tools.GetMessages()
-   foreach(var message in messages) {
-        Console.WRiteLine(message.subject);
-   }
+    var tools = new WebmasterTools(token);
+    var messages = tools.GetMessages()
+    foreach(var message in messages) {
+        Console.WriteLine(message.subject);
+    }
