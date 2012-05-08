@@ -2,7 +2,7 @@ using System;
 using System.IO;
 
 namespace WebmasterToolsApi.Caching {
-    internal static class TokenCache {
+    public static class TokenCache {
         public const int TokenValidMinutes = 60*24*7; // 7 days
 
         /// <summary>
