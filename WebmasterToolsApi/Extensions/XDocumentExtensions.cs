@@ -6,13 +6,18 @@ using System.Xml.Linq;
 namespace WebmasterToolsApi.Extensions {
     public static class XDocumentExtensions {
         /// <summary>
-        /// Removes the namespace container for a given string
+        /// Formats a property name to a valid C# property name
         /// </summary>
         /// <param name="instance"></param>
         /// <returns></returns>
         public static string ToValidPropertyName(this string instance) {
-            int stop = instance.IndexOf('}') + 1;
-            return stop > 0 ? instance.Substring(stop) : instance;
+            // Remove namespaces
+            var stop = instance.IndexOf('}') + 1;
+            instance = stop > 0 ? instance.Substring(stop) : instance;
+
+            // Replace dashes with underscore
+            instance = instance.Replace("-", "_");
+            return instance;
         }
 
         /// <summary>
