@@ -32,13 +32,13 @@ It is also possible to retrieve the feed for a specific site:
 
     var tools = new WebmasterTools(token);
     var site = tools.GetSite("http://nyqui.st/");
-    Console.WriteLine(site.entry.title);
+    Console.WriteLine(site.title);
     
 ### Getting messages
 To get all messages for a specific account:
 
     var tools = new WebmasterTools(token);
-    var messages = tools.GetMessages()
-    foreach(var message in messages) {
+    var messages = tools.GetMessages();
+    foreach(var message in messages.entry) {
         Console.WriteLine(message.subject);
     }
