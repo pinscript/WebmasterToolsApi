@@ -2,6 +2,11 @@
 
 WebmasterToolsApi provides a easy and dynamic facade over Google Webmaster Tools API.
 
+## Downloading
+You can either download the source and compile it yourself, or use the latest build:
+
+https://github.com/downloads/alexandernyquist/WebmasterToolsApi/WebmasterToolsApi.rar
+
 ## Usage
 
 ### Authenticating
