@@ -16,7 +16,7 @@ Requesting a new token every time is not performant. Since all tokens are valid 
 This will read a token from token.cache. If the file could not be found or it's not valid, we request a new token and cache that.
 
 ## Features
-* Please note that this library is far from finished and only a few resources are implemented. However, implementing this yourself should not be of any trouble.
+*Please note that this library is far from finished and only a few resources are implemented. However, implementing this yourself should not be of any trouble.*
 
 ### Sites feed
 Getting a list of all sites is easy. GetSites will return the actual feed, but as a ExpandoObject.
@@ -34,11 +34,37 @@ It is also possible to retrieve the feed for a specific site:
     var site = tools.GetSite("http://nyqui.st/");
     Console.WriteLine(site.title);
     
-### Getting messages
+### Messages feed
 To get all messages for a specific account:
 
     var tools = new WebmasterTools(token);
     var messages = tools.GetMessages();
     foreach(var message in messages.entry) {
         Console.WriteLine(message.subject);
+    }
+
+### Crawler issues feed
+To get a list of all crawler issues:
+
+    var issues = tools.GetCrawlIssues("http://nyqui.st/");
+    foreach (var issue in issues.entry) {
+        Console.WriteLine(issue.date_detected);
+    }
+    
+*Note that dashes are converted into underscores.*
+
+### Sitemaps feed
+To get a list of all sitemaps submitted for a specific site:
+
+    var sitemaps = tools.GetSitemaps("http://nyqui.st/");
+    foreach (var sitemap in sitemaps.entry) {
+        Console.WriteLine(sitemap.title);
+    }
+
+### Keywords feed
+To get a list of all keywords:
+
+    var keywords = tools.GetKeywords("http://nyqui.st/");
+    foreach (var keyword in keywords.keyword) {
+        Console.WriteLine(keyword);
     }
