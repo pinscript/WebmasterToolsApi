@@ -104,9 +104,10 @@ namespace WebmasterToolsApi {
         /// <remarks>https://developers.google.com/webmaster-tools/docs/2.0/developers_guide_protocol#Crawl_Retrieving</remarks>
         /// <param name="siteId"></param>
         /// <returns></returns>
-        public dynamic GetCrawlIssues(string siteId) {
+        public const int CrawlIssuesPerPage = 100;
+        public dynamic GetCrawlIssues(string siteId, int startIndex = 1) {
             siteId = UrlEncode(siteId);
-            var url = string.Format(WebmasterToolsUrls.CrawlIssues, siteId);
+            var url = string.Format(WebmasterToolsUrls.CrawlIssues, siteId, startIndex);
             var response = HttpClient.Get(url, StandardHeaders);
             return ParseResponse(response);
         }

@@ -8,6 +8,11 @@ using System.Text;
 namespace WebmasterToolsApi.Http {
     public class HttpClient {
         /// <summary>
+        /// Turn debug on/off
+        /// </summary>
+        public static bool Debug = false;
+
+        /// <summary>
         /// Issues a HTTP GET
         /// </summary>
         /// <param name="url">The url</param>
@@ -21,6 +26,9 @@ namespace WebmasterToolsApi.Http {
                     req.Headers.Add(header.Key, header.Value.ToString());
                 }
             }
+
+            if(Debug)
+                Console.WriteLine(req.RequestUri.ToString());
 
             using (var response = (HttpWebResponse) req.GetResponse())
             using (var responseStream = response.GetResponseStream())
@@ -39,18 +47,21 @@ namespace WebmasterToolsApi.Http {
             if (url == null) throw new ArgumentNullException("url");
             if (parameters == null) throw new ArgumentNullException("parameters");
 
-            var webRequest = WebRequest.Create(url);
-            webRequest.ContentType = "application/x-www-form-urlencoded";
-            webRequest.Method = "POST";
+            var req = WebRequest.Create(url);
+            req.ContentType = "application/x-www-form-urlencoded";
+            req.Method = "POST";
 
             var data = GetPostData(parameters);
             var bytes = Encoding.ASCII.GetBytes(data);
 
             Stream stream = null;
+            
+            if (Debug)
+                Console.WriteLine(req.RequestUri.ToString());
 
             try {
-                webRequest.ContentLength = bytes.Length;
-                stream = webRequest.GetRequestStream();
+                req.ContentLength = bytes.Length;
+                stream = req.GetRequestStream();
                 stream.Write(bytes, 0, bytes.Length);
             }
             catch (WebException ex) {
@@ -62,7 +73,7 @@ namespace WebmasterToolsApi.Http {
             }
 
             try {
-                using (var webResponse = webRequest.GetResponse())
+                using (var webResponse = req.GetResponse())
                 using (var streamReader = new StreamReader(webResponse.GetResponseStream())) {
                     return streamReader.ReadToEnd().Trim();
                 }
