@@ -5,8 +5,10 @@ using System.Linq;
 using System.Net;
 using System.Text;
 
-namespace WebmasterToolsApi.Http {
-    public class HttpClient {
+namespace WebmasterToolsApi.Http
+{
+    public class HttpClient
+    {
         /// <summary>
         /// Turn debug on/off
         /// </summary>
@@ -18,21 +20,25 @@ namespace WebmasterToolsApi.Http {
         /// <param name="url">The url</param>
         /// <param name="headers">Optional headers</param>
         /// <returns>The response HTML</returns>
-        public static string Get(string url, Dictionary<string, object> headers = null) {
+        public static string Get(string url, Dictionary<string, object> headers = null)
+        {
             var req = (HttpWebRequest) WebRequest.Create(url);
 
-            if (headers != null && headers.Any()) {
-                foreach (var header in headers) {
+            if (headers != null && headers.Any())
+            {
+                foreach (var header in headers)
+                {
                     req.Headers.Add(header.Key, header.Value.ToString());
                 }
             }
 
-            if(Debug)
+            if (Debug)
                 Console.WriteLine(req.RequestUri.ToString());
 
             using (var response = (HttpWebResponse) req.GetResponse())
             using (var responseStream = response.GetResponseStream())
-            using (var sr = new StreamReader(responseStream)) {
+            using (var sr = new StreamReader(responseStream))
+            {
                 return sr.ReadToEnd().Trim();
             }
         }
@@ -43,7 +49,8 @@ namespace WebmasterToolsApi.Http {
         /// <param name="url">The url</param>
         /// <param name="parameters">Parameters to send as post data</param>
         /// <returns>The response HTML</returns>
-        public static string Post(string url, Dictionary<string, object> parameters) {
+        public static string Post(string url, Dictionary<string, object> parameters)
+        {
             if (url == null) throw new ArgumentNullException("url");
             if (parameters == null) throw new ArgumentNullException("parameters");
 
@@ -55,30 +62,36 @@ namespace WebmasterToolsApi.Http {
             var bytes = Encoding.ASCII.GetBytes(data);
 
             Stream stream = null;
-            
+
             if (Debug)
                 Console.WriteLine(req.RequestUri.ToString());
 
-            try {
+            try
+            {
                 req.ContentLength = bytes.Length;
                 stream = req.GetRequestStream();
                 stream.Write(bytes, 0, bytes.Length);
             }
-            catch (WebException ex) {
+            catch (WebException ex)
+            {
                 throw new WebException("Error", ex);
             }
-            finally {
+            finally
+            {
                 if (stream != null)
                     stream.Dispose();
             }
 
-            try {
+            try
+            {
                 using (var webResponse = req.GetResponse())
-                using (var streamReader = new StreamReader(webResponse.GetResponseStream())) {
+                using (var streamReader = new StreamReader(webResponse.GetResponseStream()))
+                {
                     return streamReader.ReadToEnd().Trim();
                 }
             }
-            catch (WebException ex) {
+            catch (WebException ex)
+            {
                 throw new WebException(ex.Message, ex);
             }
         }
@@ -88,7 +101,8 @@ namespace WebmasterToolsApi.Http {
         /// </summary>
         /// <param name="values">The values to convert</param>
         /// <returns>A string represeting values as post data</returns>
-        protected static string GetPostData(Dictionary<string, object> values) {
+        protected static string GetPostData(Dictionary<string, object> values)
+        {
             if (values == null || !values.Any())
                 return string.Empty;
 

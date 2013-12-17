@@ -4,8 +4,10 @@ using System.Xml.Linq;
 using WebmasterToolsApi.Extensions;
 using WebmasterToolsApi.Http;
 
-namespace WebmasterToolsApi {
-    public class WebmasterTools {
+namespace WebmasterToolsApi
+{
+    public class WebmasterTools
+    {
         /// <summary>
         /// API version
         /// </summary>
@@ -13,6 +15,14 @@ namespace WebmasterToolsApi {
         /// Sent via the GData-Version header
         /// </remarks>
         public const int Version = 2;
+
+        /// <summary>
+        /// Retrieves the crawl issues feed for a specific site
+        /// </summary>
+        /// <remarks>https://developers.google.com/webmaster-tools/docs/2.0/developers_guide_protocol#Crawl_Retrieving</remarks>
+        /// <param name="siteId"></param>
+        /// <returns></returns>
+        public const int CrawlIssuesPerPage = 100;
 
         /// <summary>
         /// The current authorization token
@@ -23,29 +33,45 @@ namespace WebmasterToolsApi {
         /// Initializes a new instance
         /// </summary>
         /// <param name="token">A Google GData authorization token</param>
-        public WebmasterTools(string token) {
+        public WebmasterTools(string token)
+        {
             Token = token;
         }
 
         /// <summary>
         /// Http headers that every request needs to send
         /// </summary>
-        public Dictionary<string, object> StandardHeaders {
-            get {
-                return new Dictionary<string, object> {
-                    {"GData-Version", Version},
-                    {"Authorization", "GoogleLogin auth=" + Token}
-                };
+        public Dictionary<string, object> StandardHeaders
+        {
+            get
+            {
+                return new Dictionary<string, object>
+                    {
+                        {"GData-Version", Version},
+                        {"Authorization", "GoogleLogin auth=" + Token}
+                    };
             }
         }
 
+        public dynamic GetCrawlIssues(string siteId, int startIndex = 1)
+        {
+            siteId = UrlEncode(siteId);
+            var url = string.Format(WebmasterToolsUrls.CrawlIssues, siteId, startIndex);
+            var response = HttpClient.Get(url, StandardHeaders);
+            return ParseResponse(response);
+        }
+
         /// <summary>
-        /// Retrieves a feed containing all sites associated with this account
+        /// Retrieves the keywords feed for a specific site
         /// </summary>
-        /// <remarks>https://developers.google.com/webmaster-tools/docs/2.0/reference#Feeds_sites</remarks>
-        /// <returns>A dynamic object representing the XML feed</returns>
-        public dynamic GetSites() {
-            var response = HttpClient.Get(WebmasterToolsUrls.Sites, StandardHeaders);
+        /// <remarks>https://developers.google.com/webmaster-tools/docs/2.0/developers_guide_protocol#Keywords_retrieving</remarks>
+        /// <param name="siteId"></param>
+        /// <returns></returns>
+        public dynamic GetKeywords(string siteId)
+        {
+            siteId = UrlEncode(siteId);
+            var url = string.Format(WebmasterToolsUrls.Keywords, siteId);
+            var response = HttpClient.Get(url, StandardHeaders);
             return ParseResponse(response);
         }
 
@@ -54,7 +80,8 @@ namespace WebmasterToolsApi {
         /// </summary>
         /// <remarks>https://developers.google.com/webmaster-tools/docs/2.0/reference#Elements_messages</remarks>
         /// <returns>A dynamic object representing the XML feed</returns>
-        public dynamic GetMessages() {
+        public dynamic GetMessages()
+        {
             var response = HttpClient.Get(WebmasterToolsUrls.Messages, StandardHeaders);
             return ParseResponse(response);
         }
@@ -65,7 +92,8 @@ namespace WebmasterToolsApi {
         /// <remarks>https://developers.google.com/webmaster-tools/docs/2.0/developers_guide_protocol#AD_Retrieving</remarks>
         /// <param name="siteId"></param>
         /// <returns></returns>
-        public dynamic GetSite(string siteId) {
+        public dynamic GetSite(string siteId)
+        {
             siteId = UrlEncode(siteId);
             var url = string.Format(WebmasterToolsUrls.Site, siteId);
             var response = HttpClient.Get(url, StandardHeaders);
@@ -78,7 +106,8 @@ namespace WebmasterToolsApi {
         /// <remarks>https://developers.google.com/webmaster-tools/docs/2.0/developers_guide_protocol#Sitemaps_About</remarks>
         /// <param name="siteId"></param>
         /// <returns></returns>
-        public dynamic GetSitemaps(string siteId) {
+        public dynamic GetSitemaps(string siteId)
+        {
             siteId = UrlEncode(siteId);
             var url = string.Format(WebmasterToolsUrls.Sitemaps, siteId);
             var response = HttpClient.Get(url, StandardHeaders);
@@ -86,29 +115,13 @@ namespace WebmasterToolsApi {
         }
 
         /// <summary>
-        /// Retrieves the keywords feed for a specific site
+        /// Retrieves a feed containing all sites associated with this account
         /// </summary>
-        /// <remarks>https://developers.google.com/webmaster-tools/docs/2.0/developers_guide_protocol#Keywords_retrieving</remarks>
-        /// <param name="siteId"></param>
-        /// <returns></returns>
-        public dynamic GetKeywords(string siteId) {
-            siteId = UrlEncode(siteId);
-            var url = string.Format(WebmasterToolsUrls.Keywords, siteId);
-            var response = HttpClient.Get(url, StandardHeaders);
-            return ParseResponse(response);
-        }
-
-        /// <summary>
-        /// Retrieves the crawl issues feed for a specific site
-        /// </summary>
-        /// <remarks>https://developers.google.com/webmaster-tools/docs/2.0/developers_guide_protocol#Crawl_Retrieving</remarks>
-        /// <param name="siteId"></param>
-        /// <returns></returns>
-        public const int CrawlIssuesPerPage = 100;
-        public dynamic GetCrawlIssues(string siteId, int startIndex = 1) {
-            siteId = UrlEncode(siteId);
-            var url = string.Format(WebmasterToolsUrls.CrawlIssues, siteId, startIndex);
-            var response = HttpClient.Get(url, StandardHeaders);
+        /// <remarks>https://developers.google.com/webmaster-tools/docs/2.0/reference#Feeds_sites</remarks>
+        /// <returns>A dynamic object representing the XML feed</returns>
+        public dynamic GetSites()
+        {
+            var response = HttpClient.Get(WebmasterToolsUrls.Sites, StandardHeaders);
             return ParseResponse(response);
         }
 
@@ -117,7 +130,8 @@ namespace WebmasterToolsApi {
         /// </summary>
         /// <param name="response"></param>
         /// <returns></returns>
-        private static dynamic ParseResponse(string response) {
+        private static dynamic ParseResponse(string response)
+        {
             var doc = XDocument.Parse(response);
             return doc.ToExpandoObject();
         }
@@ -129,7 +143,8 @@ namespace WebmasterToolsApi {
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        private string UrlEncode(string value) {
+        private string UrlEncode(string value)
+        {
             return Uri.EscapeDataString(Uri.EscapeDataString(value));
         }
     }
